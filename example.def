@@ -1,0 +1,44 @@
+Bootstrap: library
+From: ubuntu:20.04
+
+%post
+    apt-get update
+    apt-get install wget xz-utils build-essential libffi-dev openssl libncurses-dev software-properties-common libcurl4-openssl-dev libpoppler-cpp-dev -y
+    add-apt-repository universe -y
+    add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
+    apt-get update && apt-get upgrade -y
+    apt-get install libgdal28 libgeos-3.9.0 libproj19 libudunits2-dev -y
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list
+    apt-get update
+    apt-get install r-base -y
+    chown :staff -R /usr/local/lib/R/site-library/
+    Rscript -e 'install.packages("assertthat")'
+    Rscript -e 'install.packages("dplyr")'
+    Rscript -e 'install.packages("feather")'
+    Rscript -e 'install.packages("forcats")'
+    Rscript -e 'install.packages("glue")'
+    Rscript -e 'install.packages("haven")'
+    Rscript -e 'install.packages("parallel")'
+    Rscript -e 'install.packages("pdftools")'
+    Rscript -e 'install.packages("purrr")'
+    Rscript -e 'install.packages("readr")'
+    Rscript -e 'install.packages("sf")'
+    Rscript -e 'install.packages("stringr")'
+    Rscript -e 'install.packages("tidyr")'
+    Rscript -e 'install.packages("tmap")'
+    mkdir /opt/python
+    cd /opt/python && wget https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tar.xz && tar -xf Python-3.9.1.tar.xz
+    cd /opt/python/Python-3.9.1 && ./configure --enable-optimizations && make
+    NOW=`date`
+
+%runscript
+    echo "Container was successfully run"
+
+%labels
+    Author philmikejones@gmail.com
+    Version v0.0.1
+
+%help
+    xz-utils to extract .tar.xz files
+    libffi-dev to make python successfully (https://stackoverflow.com/a/48045929)
